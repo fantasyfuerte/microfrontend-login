@@ -13,11 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Logo from "@/assets/brand-dark.png";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().trim().email({ message: "Debe ser un email válido" }),
@@ -37,9 +37,7 @@ function Authentication() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   const [formState, setFormState] = useState<"login" | "register">("login");
 
@@ -48,18 +46,19 @@ function Authentication() {
       <article className="flex flex-col gap-8 min-w-[370px]">
         <Image
           src={Logo}
-          className="w-[200px] self-center"
+          className="w-[180px] self-center"
           alt="Logo"
           width={150}
           height={150}
+          priority
         />
-        <div className=" ">
+        <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            {formState === "login" ? "Log in" : "Sign up"}
+            {formState === "login" ? "Iniciar sesión" : "Regístrate"}
           </h1>
           <p className="text-muted-foreground">
-            Complete the fields with your data to{" "}
-            {formState === "login" ? "sign in" : "sign up"}
+            Rellena los campos con tus datos para{" "}
+            {formState === "login" ? "iniciar sesión" : "registrarte"}
           </p>
         </div>
         <Form {...form}>
@@ -69,17 +68,17 @@ function Authentication() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <Input
-                      className="text-xl"
-                      placeholder="mike10@example.com"
+                      className="select-none"
+                      placeholder="miguel2000@gmail.com"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Insert your email to{" "}
-                    {formState === "login" ? "sign in" : "sign up"}
+                    Introduce tu correo electrónico para{" "}
+                    {formState === "login" ? "iniciar sesión" : "registrarte"}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -90,31 +89,39 @@ function Authentication() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="miketenexample"
+                      className="select-text"
+                      placeholder="miguel2000"
                       type="password"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Choose a password to{" "}
-                    {formState === "login" ? "sign in" : "sign up"}
+                    {formState === "login" ? (
+                      <Link href="/recovery">
+                        <Button className="px-0" type="button" variant="link">
+                          Olvidaste tu contraseña?
+                        </Button>
+                      </Link>
+                    ) : (
+                      "Elige una contraseña para registrarte"
+                    )}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex gap-5">
-              <Button type="submit">Send</Button>
+              <Button type="submit">Enviar</Button>
               {formState === "login" ? (
                 <Button
                   onClick={() => setFormState("register")}
                   variant={"link"}
                   type="button"
                 >
-                  Don't have an account?
+                  Regístrate
                 </Button>
               ) : (
                 <Button
@@ -122,7 +129,7 @@ function Authentication() {
                   variant={"link"}
                   type="button"
                 >
-                  Already have an account?
+                  Ya tengo una cuenta
                 </Button>
               )}
             </div>

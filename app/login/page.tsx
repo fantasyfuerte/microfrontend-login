@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Logo from "@/assets/brand-dark.png";
@@ -28,7 +27,9 @@ const formSchema = z.object({
     .max(32, { message: "La contraseña no debe exceder los 32 caracteres" }),
 });
 
-function Authentication() {
+const LOGIN_URL = process.env.LOGIN_URL || "";
+
+function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,9 +38,9 @@ function Authentication() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
-
-  const [formState, setFormState] = useState<"login" | "register">("login");
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    fetch(LOGIN_URL, { method: "POST", body: JSON.stringify(values) });
+  }
 
   return (
     <section className="flex flex-col items-center justify-center h-[80dvh]">
@@ -54,11 +55,10 @@ function Authentication() {
         />
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            {formState === "login" ? "Iniciar sesión" : "Regístrate"}
+            Iniciar sesión
           </h1>
           <p className="text-muted-foreground">
-            Rellena los campos con tus datos para{" "}
-            {formState === "login" ? "iniciar sesión" : "registrarte"}
+            Rellena los campos con tus datos para iniciar sesión
           </p>
         </div>
         <Form {...form}>
@@ -77,8 +77,7 @@ function Authentication() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Introduce tu correo electrónico para{" "}
-                    {formState === "login" ? "iniciar sesión" : "registrarte"}
+                    Introduce tu correo electrónico para iniciar sesión
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -99,15 +98,11 @@ function Authentication() {
                     />
                   </FormControl>
                   <FormDescription>
-                    {formState === "login" ? (
-                      <Link href="/recovery">
-                        <Button className="px-0" type="button" variant="link">
-                          Olvidaste tu contraseña?
-                        </Button>
-                      </Link>
-                    ) : (
-                      "Elige una contraseña para registrarte"
-                    )}
+                    <Link href="/recovery">
+                      <Button className="px-0" type="button" variant="link">
+                        Olvidaste tu contraseña?
+                      </Button>
+                    </Link>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -115,23 +110,11 @@ function Authentication() {
             />
             <div className="flex gap-5">
               <Button type="submit">Enviar</Button>
-              {formState === "login" ? (
-                <Button
-                  onClick={() => setFormState("register")}
-                  variant={"link"}
-                  type="button"
-                >
+              <Link href="/signup">
+                <Button variant={"link"} type="button">
                   Regístrate
                 </Button>
-              ) : (
-                <Button
-                  onClick={() => setFormState("login")}
-                  variant={"link"}
-                  type="button"
-                >
-                  Ya tengo una cuenta
-                </Button>
-              )}
+              </Link>
             </div>
           </form>
         </Form>
@@ -140,4 +123,4 @@ function Authentication() {
   );
 }
 
-export default Authentication;
+export default Login;

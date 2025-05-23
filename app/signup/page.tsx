@@ -40,7 +40,12 @@ function Signup() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch(SIGNUP_URL, { method: "POST", body: JSON.stringify(values) });
+     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/signup`, {
+      method: "POST",
+      body: JSON.stringify(values),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }
 
   return (

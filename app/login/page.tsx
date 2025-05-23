@@ -27,8 +27,6 @@ const formSchema = z.object({
     .max(32, { message: "La contraseña no debe exceder los 32 caracteres" }),
 });
 
-const LOGIN_URL = process.env.LOGIN_URL || "";
-
 function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +37,12 @@ function Login() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch(LOGIN_URL, { method: "POST", body: JSON.stringify(values) });
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
+      method: "POST",
+      body: JSON.stringify(values),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
   }
 
   return (

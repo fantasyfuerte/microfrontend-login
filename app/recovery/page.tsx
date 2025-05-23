@@ -32,7 +32,14 @@ function Recovery() {
   });
 
   const router = useRouter();
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(values: z.infer<typeof formSchema>) {
+     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/recovery`, {
+      method: "POST",
+      body: JSON.stringify(values),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
 
   return (
     <section className="flex flex-col items-center justify-center h-[80dvh]">
